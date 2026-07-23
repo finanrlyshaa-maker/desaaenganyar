@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Resmi Desa Aenganyar - Kec. Giligenting, Kab. Sumenep</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .admin-editable {
+            transition: all 0.2s ease;
+        }
+        body.is-admin .admin-editable:hover {
+            outline: 2px dashed #3b82f6;
+            background-color: rgba(239, 246, 255, 0.7);
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        body.is-admin .admin-editable:focus {
+            outline: 2px solid #2563eb;
+            background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(37, 99, 235, 0.2);
+        }
+        .admin-only {
+            display: none !important;
+        }
+        body.is-admin .admin-only {
+            display: flex !important;
+        }
+        body.is-admin .admin-only-inline {
+            display: inline-block !important;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans flex flex-col min-h-screen">
+
+    <!-- TOP ADMIN CONTROL BAR (Visible only when logged in as admin) -->
+    <div id="adminBar" class="admin-only bg-slate-900 text-amber-400 px-4 py-2 sticky top-0 z-50 justify-between items-center text-sm shadow-md border-b border-amber-500/30">
+        <div class="flex items-center gap-3">
+            <span class="bg-amber-500 text-slate-950 font-extrabold px-2 py-0.5 rounded text-xs uppercase tracking-wider">Mode Admin</span>
+            <span class="text-slate-300 text-xs hidden sm:inline"><i class="fas fa-info-circle mr-1 text-amber-400"></i> Klik elemen berpembatas dash untuk mengedit teks secara langsung.</span>
+        </div>
+        <div class="flex items-center gap-2">
+            <button onclick="saveAllData()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-3 py-1 rounded text-xs flex items-center gap-1 transition">
+                <i class="fas fa-save"></i> Simpan Perubahan
+            </button>
+            <button onclick="resetData()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white px-2 py-1 rounded text-xs transition" title="Reset ke Default">
+                <i class="fas fa-undo"></i>
+            </button>
+            <button onclick="logoutAdmin()" class="bg-red-600 hover:bg-red-500 text-white font-semibold px-3 py-1 rounded text-xs flex items-center gap-1 transition">
+                <i class="fas fa-sign-out-alt"></i> Keluar
+            </button>
+        </div>
+    </div>
+
+    <!-- HEADER / NAVIGATION -->
+    <header class="bg-blue-900 text-white shadow-lg sticky top-0 z-40">
+        <div class="container mx-auto px-4 py-3.5 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-amber-500 rounded-full flex items-center justify-center font-bold text-blue-950 text-xl shadow-inner">
+                    <i class="fas fa-anchor"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg md:text-xl font-bold tracking-wide flex items-center gap-2">
+                        <span>DESA AENGANYAR</span>
+                    </h1>
+                    <p class="text-xs text-blue-200">Kec. Giligenting, Kab. Sumenep, Jawa Timur</p>
+                </div>
+            </div>
+
+            <!-- Desktop Nav -->
+            <nav class="hidden lg:flex items-center space-x-6 font-medium text-sm">
+                <a href="#beranda" class="hover:text-amber-400 transition">Beranda</a>
+                <a href="#pengenalan" class="hover:text-amber-400 transition">Profil & Geografis</a>
+                <a href="#kependudukan" class="hover:text-amber-400 transition">Kependudukan</a>
+                <a href="#visimisi" class="hover:text-amber-400 transition">Visi & Misi</a>
+                <a href="#perangkat" class="hover:text-amber-400 transition">Perangkat Desa</a>
+                <a href="#dokumentasi" class="hover:text-amber-400 transition">Dokumentasi</a>
+            </nav>
+
+            <!-- Admin Button / Status -->
+            <div class="flex items-center gap-3">
+                <button id="adminLoginBtn" onclick="toggleLoginModal()" class="bg-amber-500 hover:bg-amber-400 text-blue-950 font-bold px-4 py-1.5 rounded-lg text-xs md:text-sm shadow transition flex items-center gap-2">
+                    <i class="fas fa-user-lock"></i> <span id="loginBtnText">Login Admin</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section id="beranda" class="relative bg-gradient-to-r from-blue-950 via-blue-900 to-teal-900 text-white py-20 px-4 overflow-hidden">
+        <div class="absolute inset-0 opacity-20 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80');"></div>
+        <div class="container mx-auto relative z-10 text-center max-w-4xl">
+            <span class="inline-block bg-amber-500/20 text-amber-300 border border-amber-500/40 px-3 py-1 rounded-full text-xs font-semibold mb-4 tracking-wider uppercase">
+                <i class="fas fa-water mr-1"></i> Desa Pesisir & Kepulauan
+            </span>
+            <h2 id="heroTitle" class="admin-editable text-3xl md:text-5xl font-extrabold mb-4 leading-tight">
+                Selamat Datang di Website Resmi Desa Aenganyar
+            </h2>
+            <p id="heroSubtitle" class="admin-editable text-blue-100 text-base md:text-lg mb-8 leading-relaxed max-w-2xl mx-auto">
+                Pusat informasi publik, profil wilayah, kependudukan, dan tata kelola pemerintahan Desa Aenganyar, Kecamatan Giligenting, Kabupaten Sumenep, Jawa Timur.
+            </p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="#pengenalan" class="bg-amber-500 hover:bg-amber-400 text-blue-950 font-bold px-6 py-2.5 rounded-lg shadow-lg transition">
+                    Jelajahi Profil Desa <i class="fas fa-arrow-down ml-2"></i>
+                </a>
+                <a href="#perangkat" class="bg-blue-800/80 hover:bg-blue-800 text-white font-semibold px-6 py-2.5 rounded-lg border border-blue-400/30 transition">
+                    Perangkat Desa
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- STATS HIGHLIGHT -->
+    <section class="container mx-auto px-4 -mt-10 relative z-20">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 bg-white p-6 rounded-2xl shadow-xl border border-slate-100">
+            <div class="p-4 rounded-xl bg-blue-50/60 border border-blue-100 text-center">
+                <div class="text-blue-600 text-2xl mb-1"><i class="fas fa-map-marked-alt"></i></div>
+                <div class="text-xs text-slate-500 font-medium uppercase">Luas Wilayah</div>
+                <div id="statLuas" class="admin-editable text-xl font-bold text-slate-800 mt-1">± ... ha</div>
+            </div>
+            <div class="p-4 rounded-xl bg-amber-50/60 border border-amber-100 text-center">
+                <div class="text-amber-600 text-2xl mb-1"><i class="fas fa-users"></i></div>
+                <div class="text-xs text-slate-500 font-medium uppercase">Jumlah Penduduk</div>
+                <div id="statPenduduk" class="admin-editable text-xl font-bold text-slate-800 mt-1">± ... Jiwa</div>
+            </div>
+            <div class="p-4 rounded-xl bg-teal-50/60 border border-teal-100 text-center">
+                <div class="text-teal-600 text-2xl mb-1"><i class="fas fa-fish"></i></div>
+                <div class="text-xs text-slate-500 font-medium uppercase">Sektor Utama</div>
+                <div id="statSektor" class="admin-editable text-xl font-bold text-slate-800 mt-1">Perikanan & Tani</div>
+            </div>
+            <div class="p-4 rounded-xl bg-indigo-50/60 border border-indigo-100 text-center">
+                <div class="text-indigo-600 text-2xl mb-1"><i class="fas fa-compass"></i></div>
+                <div class="text-xs text-slate-500 font-medium uppercase">Wilayah</div>
+                <div class="text-xl font-bold text-slate-800 mt-1">Pulau Giligenting</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MAIN CONTENT CONTAINERS -->
+    <main class="container mx-auto px-4 py-12 flex-grow space-y-16">
+
+        <!-- SECTION 1: PENGENALAN & GEOGRAFIS DESA -->
+        <section id="pengenalan" class="scroll-mt-24">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-2 h-8 bg-amber-500 rounded-full"></div>
+                <div>
+                    <h3 class="text-2xl font-bold text-slate-900">Pengenalan & Geografis Desa</h3>
+                    <p class="text-sm text-slate-500">Gambaran umum dan kondisi wilayah Desa Aenganyar</p>
+                </div>
+            </div>
+
+            <div class="grid lg:grid-cols-12 gap-8 items-start">
+                <!-- Text Narrative -->
+                <div class="lg:col-span-7 bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200/80 space-y-6">
+                    <div>
+                        <h4 class="text-lg font-bold text-blue-900 mb-2 flex items-center gap-2">
+                            <i class="fas fa-landmark text-amber-500"></i> Gambaran Umum
+                        </h4>
+                        <p id="deskripsiUmum" class="admin-editable text-slate-600 leading-relaxed text-justify">
+                            Desa Aenganyar merupakan salah satu desa yang terletak di Kecamatan Giligenting, Kabupaten Sumenep, Provinsi Jawa Timur. Secara geografis, desa ini berada di wilayah kepulauan yang termasuk dalam Pulau Giligenting, sehingga memiliki karakteristik khas daerah pesisir dengan pengaruh kondisi laut yang cukup dominan terhadap kehidupan masyarakat.
+                        </p>
+                    </div>
+
+                    <div class="border-t border-slate-100 pt-6">
+                        <h4 class="text-lg font-bold text-blue-900 mb-2 flex items-center gap-2">
+                            <i class="fas fa-draw-polygon text-amber-500"></i> Luas & Pemanfaatan Lahan
+                        </h4>
+                        <p id="deskripsiLuas" class="admin-editable text-slate-600 leading-relaxed text-justify">
+                            Secara administratif, Desa Aenganyar memiliki luas wilayah sekitar ± ... hektar (ha). Wilayah desa ini didominasi oleh lahan permukiman, lahan pertanian kering, serta sebagian area pesisir. Pemanfaatan lahan sebagian besar digunakan untuk kegiatan tempat tinggal dan usaha masyarakat, seperti pertanian dan perikanan.
+                        </p>
+                    </div>
+
+                    <!-- Batas Wilayah Box -->
+                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
+                        <h5 class="font-bold text-slate-800 mb-3 flex items-center gap-2 text-sm uppercase tracking-wide">
+                            <i class="fas fa-compass text-blue-600"></i> Batas-Batas Wilayah
+                        </h5>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                            <div class="p-2.5 bg-white rounded-lg border border-slate-200">
+                                <span class="text-xs font-semibold text-slate-400 block">SEBELAH UTARA</span>
+                                <span id="batasUtara" class="admin-editable font-medium text-slate-700">...</span>
+                            </div>
+                            <div class="p-2.5 bg-white rounded-lg border border-slate-200">
+                                <span class="text-xs font-semibold text-slate-400 block">SEBELAH SELATAN</span>
+                                <span id="batasSelatan" class="admin-editable font-medium text-slate-700">...</span>
+                            </div>
+                            <div class="p-2.5 bg-white rounded-lg border border-slate-200">
+                                <span class="text-xs font-semibold text-slate-400 block">SEBELAH TIMUR</span>
+                                <span id="batasTimur" class="admin-editable font-medium text-slate-700">...</span>
+                            </div>
+                            <div class="p-2.5 bg-white rounded-lg border border-slate-200">
+                                <span class="text-xs font-semibold text-slate-400 block">SEBELAH BARAT</span>
+                                <span id="batasBarat" class="admin-editable font-medium text-slate-700">...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Map & Visuals -->
+                <div class="lg:col-span-5 space-y-4">
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200/80">
+                        <div class="relative rounded-xl overflow-hidden border border-slate-200 bg-slate-100 group">
+                            <img id="mapImage" src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=800&q=80" alt="Peta Desa Aenganyar" class="w-full h-72 object-cover transition duration-300 group-hover:scale-105">
+                            <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-slate-900/80 via-slate-900/40 to-transparent p-4 text-white">
+                                <span class="bg-amber-500 text-slate-950 font-bold px-2 py-0.5 rounded text-xs uppercase mb-1 inline-block">Peta Wilayah</span>
+                                <p class="text-xs text-slate-200">Peta Administratif & Citra Satelit Desa Aenganyar</p>
+                            </div>
+                        </div>
+                        <div class="mt-3 text-center">
+                            <button onclick="changeMapUrl()" class="admin-only bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs px-3 py-1.5 rounded-lg w-full transition">
+                                <i class="fas fa-image mr-1"></i> Ubah Gambar/URL Peta
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-blue-900 to-slate-900 text-white p-6 rounded-2xl shadow-sm space-y-3">
+                        <h5 class="font-bold text-amber-400 text-sm uppercase tracking-wider flex items-center gap-2">
+                            <i class="fas fa-lightbulb"></i> Catatan Pesisir
+                        </h5>
+                        <p class="text-xs text-blue-100 leading-relaxed">
+                            Sebagai wilayah kepulauan di Pulau Giligenting, kehidupan sosio-ekonomi masyarakat Desa Aenganyar sangat berkaitan erat dengan siklus musim dan dinamika wilayah kelautan.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: KEPENDUDUKAN & KONDISI UMUM -->
+        <section id="kependudukan" class="scroll-mt-24">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-2 h-8 bg-amber-500 rounded-full"></div>
+                <div>
+                    <h3 class="text-2xl font-bold text-slate-900">Kependudukan & Mata Pencaharian</h3>
+                    <p class="text-sm text-slate-500">Demografi, lapangan kerja, dan kondisi umum masyarakat</p>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Demografi Card -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80 space-y-4">
+                    <div class="w-10 h-10 bg-blue-100 text-blue-800 rounded-xl flex items-center justify-center font-bold text-lg">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h4 class="font-bold text-slate-800 text-lg">Jumlah & Demografi</h4>
+                    <p id="deskripsiPenduduk" class="admin-editable text-slate-600 text-sm leading-relaxed">
+                        Jumlah penduduk Desa Aenganyar sekitar ± ... jiwa, yang terdiri dari laki-laki sebanyak ... jiwa dan perempuan sebanyak ... jiwa. Dengan luas wilayah tersebut, maka kepadatan penduduk desa ini tergolong ... jiwa per km².
+                    </p>
+                    <p id="deskripsiDusun" class="admin-editable text-slate-600 text-sm leading-relaxed border-t pt-3">
+                        Sebagian besar penduduk tersebar dalam beberapa dusun yang ada di Desa Aenganyar, dengan pola permukiman yang cenderung mengikuti garis pantai dan akses jalan utama.
+                    </p>
+                </div>
+
+                <!-- Mata Pencaharian Card -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80 space-y-4">
+                    <div class="w-10 h-10 bg-amber-100 text-amber-800 rounded-xl flex items-center justify-center font-bold text-lg">
+                        <i class="fas fa-ship"></i>
+                    </div>
+                    <h4 class="font-bold text-slate-800 text-lg">Mata Pencaharian</h4>
+                    <p id="deskripsiPencaharian" class="admin-editable text-slate-600 text-sm leading-relaxed">
+                        Mayoritas penduduk Desa Aenganyar bekerja di sektor perikanan sebagai nelayan, mengingat letak desa yang berada di wilayah kepulauan. Selain itu, sebagian masyarakat juga bekerja sebagai petani lahan kering, pedagang, serta pekerja sektor informal lainnya.
+                    </p>
+                    <div class="bg-amber-50/50 p-3 rounded-lg border border-amber-100 text-xs text-amber-900">
+                        <span class="font-semibold block mb-1">Sektor Utama:</span>
+                        <ul class="list-disc list-inside space-y-0.5 text-slate-600">
+                            <li>Perikanan / Nelayan (Dominan)</li>
+                            <li>Pertanian Lahan Kering</li>
+                            <li>Perdagangan & Jasa Informal</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Kondisi Umum Desa Card -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80 space-y-4 md:col-span-2 lg:col-span-1">
+                    <div class="w-10 h-10 bg-teal-100 text-teal-800 rounded-xl flex items-center justify-center font-bold text-lg">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h4 class="font-bold text-slate-800 text-lg">Kondisi Umum & Tantangan</h4>
+                    <p id="deskripsiKondisi" class="admin-editable text-slate-600 text-sm leading-relaxed">
+                        Kondisi umum Desa Aenganyar menunjukkan adanya potensi sumber daya alam di bidang kelautan dan perikanan. Namun demikian, desa ini juga menghadapi beberapa kendala, seperti keterbatasan akses transportasi, ketersediaan air bersih, serta kebutuhan peningkatan infrastruktur dasar.
+                    </p>
+                    <div class="space-y-2 pt-2">
+                        <div class="flex items-start gap-2 text-xs text-emerald-700 bg-emerald-50 p-2 rounded border border-emerald-100">
+                            <i class="fas fa-check-circle mt-0.5"></i>
+                            <span><strong>Potensi Utama:</strong> Kelautan & Hasil Perikanan Pesisir</span>
+                        </div>
+                        <div class="flex items-start gap-2 text-xs text-rose-700 bg-rose-50 p-2 rounded border border-rose-100">
+                            <i class="fas fa-exclamation-triangle mt-0.5"></i>
+                            <span><strong>Kendala:</strong> Akses Transportasi, Air Bersih & Infrastruktur Dasar</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: VISI & MISI -->
+        <section id="visimisi" class="scroll-mt-24">
+            <div class="bg-gradient-to-r from-blue-900 via-slate-900 to-blue-950 text-white rounded-3xl p-8 md:p-12 shadow-xl relative overflow-hidden">
+                <div class="absolute -right-10 -bottom-10 w-60 h-60 bg-amber-500/10 rounded-full blur-3xl"></div>
+
+                <div class="max-w-3xl mx-auto space-y-8 relative z-10 text-center">
+                    <div>
+                        <span class="bg-amber-500 text-slate-950 font-extrabold text-xs px-3 py-1 rounded-full uppercase tracking-wider">Arah Pembangunan</span>
+                        <h3 class="text-3xl font-extrabold mt-3">VISI & MISI DESA AENGANYAR</h3>
+                    </div>
+
+                    <!-- VISI BOX -->
+                    <div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/10 space-y-2">
+                        <h4 class="text-amber-400 font-bold uppercase tracking-widest text-xs">Visi Desa</h4>
+                        <div id="visiDesa" class="admin-editable text-xl md:text-2xl font-semibold italic text-white leading-relaxed">
+                            "Mewujudkan Desa Aenganyar yang Mandiri, Sejahtera, Berdaya Saing di Sektor Pesisir, dan Berkelanjutan."
+                        </div>
+                    </div>
+
+                    <!-- MISI LIST -->
+                    <div class="space-y-4 text-left">
+                        <div class="flex justify-between items-center">
+                            <h4 class="text-amber-400 font-bold uppercase tracking-widest text-xs">Misi Pembangunan Desa</h4>
+                            <button onclick="addMisi()" class="admin-only bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold px-2.5 py-1 rounded transition">
+                                <i class="fas fa-plus"></i> Tambah Misi
+                            </button>
+                        </div>
+                        <ul id="misiContainer" class="space-y-3">
+                            <li class="bg-white/5 border border-white/10 p-4 rounded-xl flex items-start justify-between gap-3">
+                                <div class="flex items-start gap-3">
+                                    <span class="bg-amber-500 text-slate-950 w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">1</span>
+                                    <span class="misi-text admin-editable text-sm text-slate-200">Meningkatkan tata kelola pemerintahan desa yang transparan, akuntabel, dan responsif dalam pelayanan publik.</span>
+                                </div>
+                                <button onclick="deleteMisi(this)" class="admin-only text-rose-400 hover:text-rose-300 text-xs px-1"><i class="fas fa-trash"></i></button>
+                            </li>
+                            <li class="bg-white/5 border border-white/10 p-4 rounded-xl flex items-start justify-between gap-3">
+                                <div class="flex items-start gap-3">
+                                    <span class="bg-amber-500 text-slate-950 w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">2</span>
+                                    <span class="misi-text admin-editable text-sm text-slate-200">Mengembangkan potensi ekonomi lokal sektor kelautan, perikanan, serta pertanian lahan kering untuk kesejahteraan warga.</span>
+                                </div>
+                                <button onclick="deleteMisi(this)" class="admin-only text-rose-400 hover:text-rose-300 text-xs px-1"><i class="fas fa-trash"></i></button>
+                            </li>
+                            <li class="bg-white/5 border border-white/10 p-4 rounded-xl flex items-start justify-between gap-3">
+                                <div class="flex items-start gap-3">
+                                    <span class="bg-amber-500 text-slate-950 w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">3</span>
+                                    <span class="misi-text admin-editable text-sm text-slate-200">Peningkatan kualitas infrastruktur dasar, ketersediaan air bersih, dan aksesibilitas transportasi desa.</span>
+                                </div>
+                                <button onclick="deleteMisi(this)" class="admin-only text-rose-400 hover:text-rose-300 text-xs px-1"><i class="fas fa-trash"></i></button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: PERANGKAT DESA -->
+        <section id="perangkat" class="scroll-mt-24">
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-3">
+                    <div class="w-2 h-8 bg-amber-500 rounded-full"></div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-slate-900">Perangkat Desa Aenganyar</h3>
+                        <p class="text-sm text-slate-500">Unsur penyelenggara pemerintahan yang membantu Kepala Desa</p>
+                    </div>
+                </div>
+                <button onclick="addPerangkat()" class="admin-only bg-blue-900 hover:bg-blue-800 text-white font-bold text-xs px-3 py-2 rounded-lg transition">
+                    <i class="fas fa-user-plus mr-1"></i> Tambah Perangkat
+                </button>
+            </div>
+
+            <div class="bg-blue-50/50 p-4 rounded-xl border border-blue-100 mb-8 text-xs text-slate-600 leading-relaxed">
+                <i class="fas fa-info-circle text-blue-600 mr-1"></i> Perangkat desa merupakan unsur penyelenggara pemerintahan desa yang membantu kepala desa dalam menjalankan tugas dan fungsi pemerintahan, pembangunan, serta pelayanan kepada masyarakat.
+            </div>
+
+            <!-- PERANGKAT GRID -->
+            <div id="perangkatGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <!-- Card 1 -->
+                <div class="perangkat-card bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden text-center relative group">
+                    <div class="p-6 bg-gradient-to-b from-slate-100 to-white">
+                        <div class="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden border-4 border-amber-400/80 shadow">
+                            <img class="perangkat-img w-full h-full object-cover" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80" alt="Foto Kepala Desa">
+                        </div>
+                        <h5 class="perangkat-nama admin-editable font-bold text-slate-800 text-base">Nama Kepala Desa</h5>
+                        <p class="perangkat-jabatan admin-editable text-xs font-semibold text-blue-700 uppercase tracking-wider mt-0.5">Kepala Desa</p>
+                    </div>
+                    <div class="p-3 bg-slate-50 border-t border-slate-100 flex justify-between items-center text-xs">
+                        <span class="perangkat-nip admin-editable text-slate-500">NIP: -</span>
+                        <button onclick="deletePerangkat(this)" class="admin-only text-rose-500 hover:text-rose-700 text-xs px-1"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="perangkat-card bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden text-center relative group">
+                    <div class="p-6 bg-gradient-to-b from-slate-100 to-white">
+                        <div class="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden border-4 border-slate-200 shadow">
+                            <img class="perangkat-img w-full h-full object-cover" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80" alt="Foto Sekretaris Desa">
+                        </div>
+                        <h5 class="perangkat-nama admin-editable font-bold text-slate-800 text-base">Nama Sekretaris Desa</h5>
+                        <p class="perangkat-jabatan admin-editable text-xs font-semibold text-blue-700 uppercase tracking-wider mt-0.5">Sekretaris Desa</p>
+                    </div>
+                    <div class="p-3 bg-slate-50 border-t border-slate-100 flex justify-between items-center text-xs">
+                        <span class="perangkat-nip admin-editable text-slate-500">NIP: -</span>
+                        <button onclick="deletePerangkat(this)" class="admin-only text-rose-500 hover:text-rose-700 text-xs px-1"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="perangkat-card bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden text-center relative group">
+                    <div class="p-6 bg-gradient-to-b from-slate-100 to-white">
+                        <div class="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden border-4 border-slate-200 shadow">
+                            <img class="perangkat-img w-full h-full object-cover" src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80" alt="Foto Kaur Keuangan">
+                        </div>
+                        <h5 class="perangkat-nama admin-editable font-bold text-slate-800 text-base">Nama Kaur Keuangan</h5>
+                        <p class="perangkat-jabatan admin-editable text-xs font-semibold text-blue-700 uppercase tracking-wider mt-0.5">Kaur Keuangan</p>
+                    </div>
+                    <div class="p-3 bg-slate-50 border-t border-slate-100 flex justify-between items-center text-xs">
+                        <span class="perangkat-nip admin-editable text-slate-500">NIP: -</span>
+                        <button onclick="deletePerangkat(this)" class="admin-only text-rose-500 hover:text-rose-700 text-xs px-1"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="perangkat-card bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden text-center relative group">
+                    <div class="p-6 bg-gradient-to-b from-slate-100 to-white">
+                        <div class="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden border-4 border-slate-200 shadow">
+                            <img class="perangkat-img w-full h-full object-cover" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80" alt="Foto Kasi Pemerintahan">
+                        </div>
+                        <h5 class="perangkat-nama admin-editable font-bold text-slate-800 text-base">Nama Kasi Pemerintahan</h5>
+                        <p class="perangkat-jabatan admin-editable text-xs font-semibold text-blue-700 uppercase tracking-wider mt-0.5">Kasi Pemerintahan</p>
+                    </div>
+                    <div class="p-3 bg-slate-50 border-t border-slate-100 flex justify-between items-center text-xs">
+                        <span class="perangkat-nip admin-editable text-slate-500">NIP: -</span>
+                        <button onclick="deletePerangkat(this)" class="admin-only text-rose-500 hover:text-rose-700 text-xs px-1"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: DOKUMENTASI & LAMPIRAN -->
+        <section id="dokumentasi" class="scroll-mt-24">
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-3">
+                    <div class="w-2 h-8 bg-amber-500 rounded-full"></div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-slate-900">Dokumentasi & Galeri Kegiatan</h3>
+                        <p class="text-sm text-slate-500">Lampiran foto, kegiatan desa, dan aset dokumentasi</p>
+                    </div>
+                </div>
+                <button onclick="addDokumentasi()" class="admin-only bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs px-3 py-2 rounded-lg transition">
+                    <i class="fas fa-plus mr-1"></i> Tambah Foto
+                </button>
+            </div>
+
+            <div id="dokumentasiGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                <div class="doc-card bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
+                    <img class="doc-img w-full h-48 object-cover" src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=600&q=80" alt="Dokumentasi Pesisir">
+                    <div class="p-4 space-y-2">
+                        <h5 class="doc-title admin-editable font-bold text-slate-800 text-sm">Kegiatan Wilayah Pesisir</h5>
+                        <p class="doc-desc admin-editable text-xs text-slate-500">Dokumentasi aktivitas nelayan dan potensi wilayah laut Desa Aenganyar.</p>
+                        <div class="flex justify-between items-center pt-2 border-t text-xs">
+                            <span class="text-slate-400">Lampiran 1</span>
+                            <button onclick="deleteDokumentasi(this)" class="admin-only text-rose-500 hover:text-rose-700 text-xs"><i class="fas fa-trash"></i> Hapus</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="doc-card bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
+                    <img class="doc-img w-full h-48 object-cover" src="https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=600&q=80" alt="Musyawarah Desa">
+                    <div class="p-4 space-y-2">
+                        <h5 class="doc-title admin-editable font-bold text-slate-800 text-sm">Musyawarah Perencanaan Desa</h5>
+                        <p class="doc-desc admin-editable text-xs text-slate-500">Pertemuan warga dan perangkat desa dalam merumuskan pembangunan desa.</p>
+                        <div class="flex justify-between items-center pt-2 border-t text-xs">
+                            <span class="text-slate-400">Lampiran 2</span>
+                            <button onclick="deleteDokumentasi(this)" class="admin-only text-rose-500 hover:text-rose-700 text-xs"><i class="fas fa-trash"></i> Hapus</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="doc-card bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
+                    <img class="doc-img w-full h-48 object-cover" src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=600&q=80" alt="Pertanian Lahan Kering">
+                    <div class="p-4 space-y-2">
+                        <h5 class="doc-title admin-editable font-bold text-slate-800 text-sm">Pertanian & Lahan Desa</h5>
+                        <p class="doc-desc admin-editable text-xs text-slate-500">Pemanfaatan pertanian lahan kering dan potensi daratan Desa Aenganyar.</p>
+                        <div class="flex justify-between items-center pt-2 border-t text-xs">
+                            <span class="text-slate-400">Lampiran 3</span>
+                            <button onclick="deleteDokumentasi(this)" class="admin-only text-rose-500 hover:text-rose-700 text-xs"><i class="fas fa-trash"></i> Hapus</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-slate-400 text-sm py-10 border-t border-slate-800 mt-12">
+        <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+            <div class="space-y-3">
+                <div class="flex items-center space-x-2 text-white font-bold text-lg">
+                    <i class="fas fa-anchor text-amber-500"></i>
+                    <span>DESA AENGANYAR</span>
+                </div>
+                <p class="text-xs text-slate-400 leading-relaxed">
+                    Kecamatan Giligenting, Kabupaten Sumenep, Provinsi Jawa Timur, Indonesia.
+                </p>
+            </div>
+            <div>
+                <h5 class="text-white font-semibold mb-3 text-xs uppercase tracking-wider">Tautan Cepat</h5>
+                <ul class="space-y-2 text-xs">
+                    <li><a href="#beranda" class="hover:text-amber-400 transition">Beranda</a></li>
+                    <li><a href="#pengenalan" class="hover:text-amber-400 transition">Profil & Geografis</a></li>
+                    <li><a href="#visimisi" class="hover:text-amber-400 transition">Visi & Misi</a></li>
+                    <li><a href="#perangkat" class="hover:text-amber-400 transition">Perangkat Desa</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="text-white font-semibold mb-3 text-xs uppercase tracking-wider">Akses Administrator</h5>
+                <p class="text-xs text-slate-400 mb-3">Sistem pengeditan konten dikunci khusus untuk admin desa.</p>
+                <button onclick="toggleLoginModal()" class="bg-slate-800 hover:bg-slate-700 text-amber-400 px-3 py-1.5 rounded text-xs border border-amber-500/30 transition">
+                    <i class="fas fa-lock mr-1"></i> Portal Admin
+                </button>
+            </div>
+        </div>
+        <div class="container mx-auto px-4 pt-6 border-t border-slate-800/80 text-center text-xs text-slate-500">
+            &copy; 2026 Pemerintah Desa Aenganyar. Hak Cipta Dilindungi Undang-Undang.
+        </div>
+    </footer>
+
+    <!-- ADMIN LOGIN MODAL -->
+    <div id="loginModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 relative border border-slate-100">
+            <button onclick="toggleLoginModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fas fa-times"></i></button>
+
+            <div class="text-center space-y-2 mb-6">
+                <div class="w-12 h-12 bg-amber-100 text-amber-800 rounded-full flex items-center justify-center text-xl mx-auto font-bold">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <h4 class="text-lg font-bold text-slate-900">Login Admin Desa</h4>
+                <p class="text-xs text-slate-500">Masukkan kata sandi admin untuk mengaktifkan mode edit.</p>
+            </div>
+
+            <form onsubmit="handleLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Kata Sandi Admin</label>
+                    <input type="password" id="adminPassword" placeholder="Masukkan kata sandi " class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-600">
+                </div>
+                <div id="loginError" class="text-xs text-rose-600 hidden font-medium">
+                    <i class="fas fa-exclamation-circle mr-1"></i> Kata sandi salah! Coba lagi.
+                </div>
+                <button type="submit" class="w-full bg-blue-900 hover:bg-blue-800 text-white font-bold py-2 rounded-lg text-sm transition shadow">
+                    Masuk Sebagai Admin
+                </button>
+                <div class="text-center text-xs text-slate-400 mt-2">
+                     <code class="bg-slate-100 px-1 py-0.5 rounded text-slate-700"></code>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl z-50 flex items-center gap-3 transition transform translate-y-20 opacity-0">
+        <i class="fas fa-check-circle text-emerald-400 text-lg"></i>
+        <span id="toastMsg" class="text-xs font-medium">Perubahan berhasil disimpan!</span>
+    </div>
+
+    <!-- JAVASCRIPT FOR ADMIN EDITING & STORAGE -->
+    <script>
+        // Password Admin Default
+        const DEFAULT_PASS = "aenganyar";
+        let isAdmin = false;
+
+        // Key untuk LocalStorage
+        const STORAGE_KEY = "aenganyar_website_data_v1";
+
+        // Inisialisasi saat dokumen dimuat
+        document.addEventListener("DOMContentLoaded", () => {
+            loadSavedData();
+            checkAdminSession();
+        });
+
+        // Login Modal Toggle
+        function toggleLoginModal() {
+            const modal = document.getElementById("loginModal");
+            modal.classList.toggle("hidden");
+            document.getElementById("loginError").classList.add("hidden");
+        }
+
+        // Handle Admin Login
+        function handleLogin(e) {
+            e.preventDefault();
+            const inputPass = document.getElementById("adminPassword").value;
+            if (inputPass === DEFAULT_PASS) {
+                isAdmin = true;
+                sessionStorage.setItem("aenganyar_admin_session", "true");
+                applyAdminState();
+                toggleLoginModal();
+                showToast("Berhasil masuk sebagai Admin!");
+            } else {
+                document.getElementById("loginError").classList.remove("hidden");
+            }
+        }
+
+        // Logout Admin
+        function logoutAdmin() {
+            isAdmin = false;
+            sessionStorage.removeItem("aenganyar_admin_session");
+            applyAdminState();
+            showToast("Keluar dari Mode Admin.");
+        }
+
+        function checkAdminSession() {
+            if (sessionStorage.getItem("aenganyar_admin_session") === "true") {
+                isAdmin = true;
+                applyAdminState();
+            }
+        }
+
+        // Apply Admin State to DOM
+        function applyAdminState() {
+            const body = document.body;
+            const editables = document.querySelectorAll(".admin-editable");
+            const loginBtnText = document.getElementById("loginBtnText");
+            const loginBtn = document.getElementById("adminLoginBtn");
+
+            if (isAdmin) {
+                body.classList.add("is-admin");
+                editables.forEach(el => {
+                    el.contentEditable = "true";
+                });
+                loginBtnText.textContent = "Admin Aktif";
+                loginBtn.classList.replace("bg-amber-500", "bg-emerald-500");
+                loginBtn.classList.replace("text-blue-950", "text-white");
+            } else {
+                body.classList.remove("is-admin");
+                editables.forEach(el => {
+                    el.contentEditable = "false";
+                });
+                loginBtnText.textContent = "Login Admin";
+                loginBtn.classList.replace("bg-emerald-500", "bg-amber-500");
+                loginBtn.classList.replace("text-white", "text-blue-950");
+            }
+        }
+
+        // Save All Editable Content to LocalStorage
+        function saveAllData() {
+            if (!isAdmin) return;
+
+            const data = {
+                heroTitle: document.getElementById("heroTitle").innerHTML,
+                heroSubtitle: document.getElementById("heroSubtitle").innerHTML,
+                statLuas: document.getElementById("statLuas").innerHTML,
+                statPenduduk: document.getElementById("statPenduduk").innerHTML,
+                statSektor: document.getElementById("statSektor").innerHTML,
+                deskripsiUmum: document.getElementById("deskripsiUmum").innerHTML,
+                deskripsiLuas: document.getElementById("deskripsiLuas").innerHTML,
+                batasUtara: document.getElementById("batasUtara").innerHTML,
+                batasSelatan: document.getElementById("batasSelatan").innerHTML,
+                batasTimur: document.getElementById("batasTimur").innerHTML,
+                batasBarat: document.getElementById("batasBarat").innerHTML,
+                deskripsiPenduduk: document.getElementById("deskripsiPenduduk").innerHTML,
+                deskripsiDusun: document.getElementById("deskripsiDusun").innerHTML,
+                deskripsiPencaharian: document.getElementById("deskripsiPencaharian").innerHTML,
+                deskripsiKondisi: document.getElementById("deskripsiKondisi").innerHTML,
+                visiDesa: document.getElementById("visiDesa").innerHTML,
+                misiHtml: document.getElementById("misiContainer").innerHTML,
+                perangkatHtml: document.getElementById("perangkatGrid").innerHTML,
+                dokumentasiHtml: document.getElementById("dokumentasiGrid").innerHTML,
+                mapImageSrc: document.getElementById("mapImage").src
+            };
+
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            showToast("Perubahan berhasil disimpan!");
+        }
+
+        // Load Saved Content
+        function loadSavedData() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (!saved) return;
+
+            try {
+                const data = JSON.parse(saved);
+                if (data.heroTitle) document.getElementById("heroTitle").innerHTML = data.heroTitle;
+                if (data.heroSubtitle) document.getElementById("heroSubtitle").innerHTML = data.heroSubtitle;
+                if (data.statLuas) document.getElementById("statLuas").innerHTML = data.statLuas;
+                if (data.statPenduduk) document.getElementById("statPenduduk").innerHTML = data.statPenduduk;
+                if (data.statSektor) document.getElementById("statSektor").innerHTML = data.statSektor;
+                if (data.deskripsiUmum) document.getElementById("deskripsiUmum").innerHTML = data.deskripsiUmum;
+                if (data.deskripsiLuas) document.getElementById("deskripsiLuas").innerHTML = data.deskripsiLuas;
+                if (data.batasUtara) document.getElementById("batasUtara").innerHTML = data.batasUtara;
+                if (data.batasSelatan) document.getElementById("batasSelatan").innerHTML = data.batasSelatan;
+                if (data.batasTimur) document.getElementById("batasTimur").innerHTML = data.batasTimur;
+                if (data.batasBarat) document.getElementById("batasBarat").innerHTML = data.batasBarat;
+                if (data.deskripsiPenduduk) document.getElementById("deskripsiPenduduk").innerHTML = data.deskripsiPenduduk;
+                if (data.deskripsiDusun) document.getElementById("deskripsiDusun").innerHTML = data.deskripsiDusun;
+                if (data.deskripsiPencaharian) document.getElementById("deskripsiPencaharian").innerHTML = data.deskripsiPencaharian;
+                if (data.deskripsiKondisi) document.getElementById("deskripsiKondisi").innerHTML = data.deskripsiKondisi;
+                if (data.visiDesa) document.getElementById("visiDesa").innerHTML = data.visiDesa;
+                if (data.misiHtml) document.getElementById("misiContainer").innerHTML = data.misiHtml;
+                if (data.perangkatHtml) document.getElementById("perangkatGrid").innerHTML = data.perangkatHtml;
+                if (data.dokumentasiHtml) document.getElementById("dokumentasiGrid").innerHTML = data.dokumentasiHtml;
+                if (data.mapImageSrc) document.getElementById("mapImage").src = data.mapImageSrc;
+            } catch (e) {
+                console.error("Gagal memuat data dari LocalStorage", e);
+            }
+        }
+
+        // Reset Data
+        function resetData() {
+            if (confirm("Apakah Anda yakin ingin mengembalikan konten ke default?")) {
+                localStorage.removeItem(STORAGE_KEY);
+                location.reload();
+            }
+        }
+
+        // Add Misi
+        function addMisi() {
+            const container = document.getElementById("misiContainer");
+            const count = container.children.length + 1;
+            const li = document.createElement("li");
+            li.className = "bg-white/5 border border-white/10 p-4 rounded-xl flex items-start justify-between gap-3";
+            li.innerHTML = `
+                <div class="flex items-start gap-3">
+                    <span class="bg-amber-500 text-slate-950 w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">${count}</span>
+                    <span class="misi-text admin-editable text-sm text-slate-200">Tuliskan misi baru di sini...</span>
+                </div>
+                <button onclick="deleteMisi(this)" class="admin-only text-rose-400 hover:text-rose-300 text-xs px-1"><i class="fas fa-trash"></i></button>
+            `;
+            container.appendChild(li);
+            applyAdminState();
+        }
+
+        function deleteMisi(btn) {
+            btn.closest("li").remove();
+        }
+
+        // Add Perangkat
+        function addPerangkat() {
+            const grid = document.getElementById("perangkatGrid");
+            const div = document.createElement("div");
+            div.className = "perangkat-card bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden text-center relative group";
+            div.innerHTML = `
+                <div class="p-6 bg-gradient-to-b from-slate-100 to-white">
+                    <div class="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden border-4 border-slate-200 shadow">
+                        <img class="perangkat-img w-full h-full object-cover" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=300&q=80" alt="Foto Perangkat">
+                    </div>
+                    <h5 class="perangkat-nama admin-editable font-bold text-slate-800 text-base">Nama Perangkat Baru</h5>
+                    <p class="perangkat-jabatan admin-editable text-xs font-semibold text-blue-700 uppercase tracking-wider mt-0.5">Jabatan Baru</p>
+                </div>
+                <div class="p-3 bg-slate-50 border-t border-slate-100 flex justify-between items-center text-xs">
+                    <span class="perangkat-nip admin-editable text-slate-500">NIP: -</span>
+                    <button onclick="deletePerangkat(this)" class="admin-only text-rose-500 hover:text-rose-700 text-xs px-1"><i class="fas fa-trash"></i></button>
+                </div>
+            `;
+            grid.appendChild(div);
+            applyAdminState();
+        }
+
+        function deletePerangkat(btn) {
+            btn.closest(".perangkat-card").remove();
+        }
+
+        // Add Dokumentasi
+        function addDokumentasi() {
+            const grid = document.getElementById("dokumentasiGrid");
+            const div = document.createElement("div");
+            div.className = "doc-card bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden";
+            div.innerHTML = `
+                <img class="doc-img w-full h-48 object-cover" src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=600&q=80" alt="Foto Kegiatan">
+                <div class="p-4 space-y-2">
+                    <h5 class="doc-title admin-editable font-bold text-slate-800 text-sm">Judul Kegiatan Baru</h5>
+                    <p class="doc-desc admin-editable text-xs text-slate-500">Deskripsi singkat kegiatan desa...</p>
+                    <div class="flex justify-between items-center pt-2 border-t text-xs">
+                        <span class="text-slate-400">Lampiran</span>
+                        <button onclick="deleteDokumentasi(this)" class="admin-only text-rose-500 hover:text-rose-700 text-xs"><i class="fas fa-trash"></i> Hapus</button>
+                    </div>
+                </div>
+            `;
+            grid.appendChild(div);
+            applyAdminState();
+        }
+
+        function deleteDokumentasi(btn) {
+            btn.closest(".doc-card").remove();
+        }
+
+        // Change Map Image
+        function changeMapUrl() {
+            const currentUrl = document.getElementById("mapImage").src;
+            const newUrl = prompt("Masukkan URL gambar Peta Wilayah baru:", currentUrl);
+            if (newUrl) {
+                document.getElementById("mapImage").src = newUrl;
+            }
+        }
+
+        // Toast Notification Helper
+        function showToast(msg) {
+            const toast = document.getElementById("toast");
+            document.getElementById("toastMsg").textContent = msg;
+            toast.classList.remove("translate-y-20", "opacity-0");
+            setTimeout(() => {
+                toast.classList.add("translate-y-20", "opacity-0");
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
+website_desa_aenganyar.html
+Menampilkan website_desa_aenganyar.html.
